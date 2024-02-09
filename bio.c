@@ -60,6 +60,11 @@ bget(uint dev, uint blockno)
   for(b = bcache.head.next; b != &bcache.head; b = b->next){
     if(b->dev == dev && b->blockno == blockno){
       b->refcnt++;
+      
+      /*
+        sleep lock ; when the thread which acquires this buffer sees refcnt > 1, it will sleep 
+        till refcnt = 0 ; this maintains the invariant that at a time, only one thread has access to a disk block copy in buffer
+      */
       return b;
     }
   }
@@ -72,7 +77,7 @@ bget(uint dev, uint blockno)
       b->dev = dev;
       b->blockno = blockno;
       b->flags = 0;
-      b->refcnt = 1;
+      b->refcnt = 1; 
       return b;
     }
   }
