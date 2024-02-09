@@ -1,0 +1,3 @@
+slide 15 - limit max value ? , granularity 
+see linker, loader again
+see assembly file layout (data segment in particular)

@@ -94,7 +94,7 @@ bootblock: bootasm.S bootmain.c
 	$(LD) $(LDFLAGS) -N -e start -Ttext 0x7C00 -o bootblock.o bootasm.o bootmain.o
 	$(OBJDUMP) -S bootblock.o > bootblock.asm
 	$(OBJCOPY) -S -O binary -j .text bootblock.o bootblock
-	./sign.pl bootblock
+	perl ./sign.pl bootblock
 
 kernel: $(OBJS) entry.o kernel.ld
 	$(LD) $(LDFLAGS) -T kernel.ld -o kernel entry.o $(OBJS) -b binary
@@ -103,7 +103,7 @@ kernel: $(OBJS) entry.o kernel.ld
 
 
 vectors.S: vectors.pl
-	./vectors.pl > vectors.S
+	perl ./vectors.pl > vectors.S
 
 # Prevent deletion of intermediate files, e.g. cat.o, after first build, so
 # that disk image changes after first build are persistent until clean.  More

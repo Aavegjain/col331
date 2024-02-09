@@ -33,5 +33,6 @@ main(void)
   sti();           // enable interrupts
   welcome();       // print welcome message
   for(;;)
-    wfi();
+  wfi();
+  // ABC->AaBbCc;
 }
