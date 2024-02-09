@@ -56,7 +56,7 @@ bget(uint dev, uint blockno)
 {
   struct buf *b;
 
-  // Is the block already cached?
+  // Is the block already cached? scan from prev to locate LRU blocks
   for(b = bcache.head.next; b != &bcache.head; b = b->next){
     if(b->dev == dev && b->blockno == blockno){
       b->refcnt++;
@@ -69,7 +69,7 @@ bget(uint dev, uint blockno)
     }
   }
 
-  // Not cached; recycle an unused buffer.
+  // Not cached; recycle an unused buffer (scan from front to get MRU blocks)
   // Even if refcnt==0, B_DIRTY indicates a buffer is in use
   // because log.c has modified it but not yet committed it.
   for(b = bcache.head.prev; b != &bcache.head; b = b->prev){
@@ -82,6 +82,10 @@ bget(uint dev, uint blockno)
     }
   }
   panic("bget: no buffers");
+  /*
+    why panicking->
+    A more graceful response might be to sleep until a buffer became free, though there would then be a possibility of deadlock.
+  */
 }
 
 // Return a locked buf with the contents of the indicated block.
