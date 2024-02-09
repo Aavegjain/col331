@@ -1,3 +1,10 @@
 slide 15 - limit max value ? , granularity 
 see linker, loader again
 see assembly file layout (data segment in particular)
+
+fs->
+what is dev ?
+if((b->flags & (B_VALID|B_DIRTY)) == B_VALID)
+    panic("iderw: nothing to do"); 
+
+why panicking here -> because whenever called from bio.c, we have VALID=0 or DIRTY=1
