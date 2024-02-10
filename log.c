@@ -61,6 +61,7 @@ initlog(int dev)
 }
 
 // Copy committed blocks from log to their home location
+// checkpointing
 static void
 install_trans(void)
 {
@@ -107,6 +108,14 @@ write_head(void)
   brelse(buf);
 }
 
+
+
+/*
+
+  this is called from init_log(). this is the recovery procedure called before the first 
+  user process runs.
+
+*/
 static void
 recover_from_log(void)
 {
@@ -134,6 +143,10 @@ end_op(void)
 }
 
 // Copy modified blocks from cache to log.
+
+/*
+  only data attr is used of the data blocks in log (after log.start)
+*/
 static void
 write_log(void)
 {
@@ -154,6 +167,7 @@ commit()
 {
   if (log.lh.n > 0) {
     write_log();     // Write modified blocks from cache to log
+    // write_head() necessary to ensure crash consistency, since recover_from_log() calls read_head()
     write_head();    // Write header to disk -- the real commit
     install_trans(); // Now install writes to home locations
     log.lh.n = 0;
@@ -175,6 +189,7 @@ log_write(struct buf *b)
 {
   int i;
 
+// wtf log.lh.n >= log.size - 1, log.size=LOGSIZE so first cond is moot !!
   if (log.lh.n >= LOGSIZE || log.lh.n >= log.size - 1)
     panic("too big a transaction");
 
