@@ -63,7 +63,7 @@ bget(uint dev, uint blockno)
       
       /*
         sleep lock ; when the thread which acquires this buffer sees refcnt > 1, it will sleep 
-        till refcnt = 0 ; this maintains the invariant that at a time, only one thread has access to a disk block copy in buffer
+        till refcnt = 1 ; this maintains the invariant that at a time, only one thread has access to a disk block copy in buffer
       */
       return b;
     }
